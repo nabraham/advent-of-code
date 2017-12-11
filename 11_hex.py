@@ -1,63 +1,66 @@
-class Cell:
-    x = 0
-    y = 0
+# Use a tilted coordinate system
+# 0,0
+# 
+#       1,0
+# 
+# 0,1         2,0
+# 
+#       1,1          3,0
+# 
+# 0,2         2,1          4,0  
+# 
+#       1,2          3,1        5,0
+# 
+# 0,3          2,2         4,1  
+# 
+#  N: y-1                  
+# SE: x+1,
+# NE: x+1,y-1
 
-    def __init__(self, x, y):
+class Cell:
+
+    def __init__(self, x=0, y=0):
         self.x = x
         self.y = y
 
-    def clone(self):
-        return Cell(self.x, self.y)
-
-    def odd(self):
-        return self.x % 2
-
-    def even(self):
-        return not self.odd()
 
     def move(self, d):
         if d not in 'n,s,ne,se,nw,sw':
             raise Exception('invalid direction')
-        
-        if 'n' == d or ('n' in d and self.odd()):
+
+        if d in ['n','ne']:
+            self.y -=1
+        elif d in ['s', 'sw']:
             self.y += 1
-        elif 's' == d or ('s' in d and self.even()):
-            self.y -= 1
 
-        if 'e' in d:
-            self.x += 1
-        elif 'w' in d:
+        if 'w' in d:
             self.x -= 1
+        elif 'e' in d:
+            self.x += 1
 
-    def equal(self, other):
-        return self.x == other.x and self.y == other.y
 
-    def distance(self, other):
-        copy = self.clone()
-        dist = 0
-        while not copy.equal(other):
-            dist += 1
-            dx = other.x - copy.x
-            dy = other.y - copy.y
-            NS = 'ns'[dy < 0]
-            EW = ['ew'[dx < 0], ''][dx == 0]
-            copy.move(NS+EW)
-        return dist
+    def distance(self, other_x=0, other_y=0):
+        dx = other_x - self.x
+        dy = other_y - self.y
+        if dx * dy > 0:
+            return abs(dx + dy)
+        else:
+            return max(abs(dx), abs(dy))
 
 
     def __repr__(self):
         return '(%d,%d)' % (self.x,self.y)
 
+
 def main(movements):
     moves = movements.split(',')
-    origin = Cell(0,0)
-    c = Cell(0,0)
+    c = Cell()
     distances = []
     for m in moves:
         c.move(m)
-        distances.append(c.distance(origin))
+        distances.append(c.distance())
+    return c, distances[-1], max(distances)
 
-    return distances[-1], max(distances)
 
 if __name__ == '__main__':
     with open('data/11.txt') as f:
