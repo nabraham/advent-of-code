@@ -1,56 +1,36 @@
-from pprint import pprint
+def hit(scanner, delay=0):
+    return (scanner[0]+delay) % (2*(scanner[1]-1)) == 0
 
 
-def increment(firewall):
-    for layer in firewall:
-        firewall[layer][1] += firewall[layer][2]
-        if (firewall[layer][1] + 1) == firewall[layer][0] or firewall[layer][1] == 0:
-            firewall[layer][2] *= -1
-
-
-def print_firewall(fw, score, verbose=False):
-    if verbose:
-        print('Score:', score)
-        pprint(fw)
-        print()
-
-
-def part1(firewall, size, verbose=False):
-    score = 0
-    for i in range(size+1):
-        if i in firewall and firewall[i][1] == 0:
-            score += i * firewall[i][0]
-        increment(firewall)
-        print_firewall(firewall, score, verbose)
+def part1(scanners):
+    hits = filter(hit, scanners)
+    score = sum(map(lambda s: s[0]*s[1], hits))
     return score
 
-def part2(firewall):
-    scanners = sorted([(s, firewall[s][0]) for s in firewall], key=lambda x: x[0])
+
+# iterating over part 1 took too long; need to short circuit failing attempts
+def part2(scanners):
     delay = 0
     failing = True
     while failing:
         failing = False
         for scanner in scanners:
-            if (scanner[0] + delay) % (2 * (scanner[1]-1)) == 0:
+            if hit(scanner, delay):
                 failing = True
                 delay += 1
                 break
     return delay
 
 
+def parse_line(line):
+    return [int(x) for x in line.strip('\n').split(':')]
+
+
 def run_file(filename, verbose=False):
     print('\n%s\n%s' % (filename, '-'*len(filename)))
-    firewall = {}
     with open(filename) as f:
-        for line in f.readlines():
-            parts = [int(x) for x in line.strip('\n').split(':')]
-            size = parts[0]
-            firewall[parts[0]] = [parts[1], 0, 1]  #depth, scanner index, direction
-
-        #PART 1
-        print('Score:', part1(firewall, size, verbose))
-
-        #PART 2
+        firewall = list(map(parse_line, f.readlines()))
+        print('Score:', part1(firewall))
         print('Delay:', part2(firewall))
 
 
