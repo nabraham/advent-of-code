@@ -1,4 +1,5 @@
 knots = __import__('10_knots')
+import networkx as nx
 
 def pad(c,n):
     if len(c) < n:
@@ -38,53 +39,26 @@ def print_top_left(grid, N=8, pad=4):
     pprint.pprint(sub_cols)
 
 
-def label(grid, i, j):
-    if j > 0 and grid[i][j-1] != '0':
-        return grid[i][j-1]
-    elif i > 0 and grid[i-1][j] != '0':
-        return grid[i-1][j]
-    else:
-        return None
-
 def neighbors(grid, i, j):
     neighbors = []
     if i > 0 and grid[i-1][j] == '1':
         neighbors.append((i-1,j))
     if j > 0 and grid[i][j-1] == '1':
         neighbors.append((i,j-1))
-    if i < (len(grid) - 1) and grid[i+1][j] == '1':
-        neighbors.append((i+1,j))
-    if j < (len(grid[0]) - 1) and grid[i][j+1] == '1':
-        neighbors.append((i,j+1))
     return neighbors
 
 
-def walk_grid(grid, i, j, v):
-    queue = set()
-    queue.add((i,j))
-    while len(queue) > 0:
-        next_queue = set()
-        for cell in queue:
-            grid[cell[0]][cell[1]] = v
-            for n in neighbors(grid, cell[0], cell[1]):
-                next_queue.add(n)
-        queue = next_queue
-
-
-def count_blobs(str_grid):
-    grid = [list(row) for row in str_grid]
-    next_region = 0
+def count_blobs(grid):
+    G = nx.Graph()
     for i, row in enumerate(grid):
         for j, cell in enumerate(row):
             if cell == '1':
-                next_region += 1
-                walk_grid(grid, i, j, next_region)
-            elif cell == '0':
-                grid[i][j] = 0
-    return grid, next_region
+                G.add_node((i,j))
+                for n in neighbors(grid, i, j):
+                    G.add_edge((i,j),n)
+    return len(list(nx.connected_components(G)))
 
     
-
 def main(prefix,N=128):
     grid = gen_grid(prefix, N)
     print_top_left(grid)
@@ -93,8 +67,7 @@ def main(prefix,N=128):
     row_sums = map(row_sum, grid)
 
     #part 2
-    blobbed, count = count_blobs(grid)
-    print_top_left(blobbed)
+    count = count_blobs(grid)
 
     return sum(row_sums), count
 
@@ -102,8 +75,8 @@ def main(prefix,N=128):
 if __name__ == '__main__':
     import sys
     #example
-    #hash_prefix = 'flqrgnkx'
-    hash_prefix = 'uugsqrei'
+    hash_prefix = 'flqrgnkx'
+    #hash_prefix = 'uugsqrei'
     if len(sys.argv) > 1:
         hash_prefix = sys.argv[1]
     print(main(hash_prefix))
