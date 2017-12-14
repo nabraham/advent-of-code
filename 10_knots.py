@@ -26,6 +26,21 @@ def main(values, lengths, iters=1, verbose=False):
     return values
 
 
+def pad(cc):
+    if len(cc) == 0:
+        return '00'
+    elif len(cc) == 1:
+        return '0' + cc
+    else:
+        return cc
+
+
+def to_hex(values):
+    blocks = [values[16*b:16*(b+1)] for b in range(16)]
+    chars = [pad(hex(reduce(lambda x,y: x ^ y, b))[2:]) for b in blocks]
+    return ''.join(chars)
+
+
 if __name__ == '__main__':
     with open('data/10.txt') as f:
         line = f.readlines()[0]
@@ -38,6 +53,4 @@ if __name__ == '__main__':
         #PART 2
         lengths2 = [ord(c) for c in line.strip('\n')] + [17, 31, 73, 47, 23]
         values2 = main(list(range(256)), lengths2, 64)
-        blocks = [values2[16*b:16*(b+1)] for b in range(16)]
-        chars = [hex(reduce(lambda x,y: x ^ y, b))[2:] for b in blocks]
-        print(''.join(chars))
+        print(to_hex(values2))
