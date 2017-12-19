@@ -1,5 +1,6 @@
 import string
 import logging
+import numpy
 
 logger = logging.getLogger('tubes')
 
@@ -29,9 +30,8 @@ def turn(pos, direction, maze):
             return (0,1)
 
 
-
 def main(maze):
-    print_maze(maze)
+    print_maze(maze, 320)
     pos = (0, maze[0].index('|'))
     direction = (1,0)
     accum = []
@@ -59,14 +59,29 @@ def main(maze):
     return ''.join(accum), steps
 
 
-def run(filename):
+def optimize(maze):
+    logger.error('Pre optimization: %d x %d' % (len(maze), len(maze[0])))
+    #filter identical rows -- probably should check for only [ |], but this is good enough
+    maze = [row for i, row in enumerate(maze[1:]) if i == 0 or row != maze[i-1]]
+    #filter identical cols -- probably should check for only [ -], but this is good enough
+    matrix = numpy.array(maze).transpose()
+    matrix = numpy.array([row for i, row in enumerate(matrix[1:]) if i == 0 or list(row) != list(matrix[i-1])])
+    matrix = matrix.transpose()
+    logger.error('Post optimization: %d x %d' % matrix.shape)
+    maze = [list(row) for row in matrix]
+    return maze
+
+
+def run(filename, should_optimize=False):
     with open(filename) as f:
         maze = [list(line.strip('\n')) for line in f.readlines()]
-        logger.error('\n%s\n%s' % (filename, '-'*len(filename)))
+        if should_optimize:
+            maze = optimize(maze)
         return main(maze)
 
 
 if __name__ == '__main__':
     logger.error(run('data/19_test.txt'))
     logger.setLevel(logging.ERROR)
-    logger.error(run('data/19.txt'))
+    logger.error(run('data/19.txt', True))
+    logger.error(run('data/19.txt', False))
