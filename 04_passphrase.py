@@ -1,3 +1,4 @@
+import aoc_utils
 from collections import Counter
 
 def valid(line):
@@ -19,5 +20,4 @@ def solve(lines):
 
 
 if __name__ == '__main__':
-    with open('data/04.txt') as f:
-        print(solve([line.strip('\n') for line in f.readlines()]))
+    print(solve(aoc_utils.get_input()))

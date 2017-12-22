@@ -1,3 +1,5 @@
+import aoc_utils
+
 def row_parse(line):
     return list(map(lambda x: int(x), line.split('\t')))
 
@@ -24,5 +26,4 @@ def solve(lines):
 
 
 if __name__ == '__main__':
-    with open('data/02.txt') as f:
-        print(solve([line.strip('\n') for line in f.readlines()]))
+    print(solve([line.strip('\n') for line in aoc_utils.get_input()]))

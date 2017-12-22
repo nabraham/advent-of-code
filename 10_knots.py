@@ -1,3 +1,4 @@
+import aoc_utils
 import math
 from functools import reduce
 
@@ -42,15 +43,14 @@ def to_hex(values):
 
 
 if __name__ == '__main__':
-    with open('data/10.txt') as f:
-        line = f.readlines()[0]
+    line = aoc_utils.get_input()[0]
 
-        #PART 1
-        lengths = [int(x) for x in line.split(',')]
-        values = main(list(range(256)), lengths)
-        print(values[0] * values[1])
+    #PART 1
+    lengths = [int(x) for x in line.split(',')]
+    values = main(list(range(256)), lengths)
+    print(values[0] * values[1])
 
-        #PART 2
-        lengths2 = [ord(c) for c in line.strip('\n')] + [17, 31, 73, 47, 23]
-        values2 = main(list(range(256)), lengths2, 64)
-        print(to_hex(values2))
+    #PART 2
+    lengths2 = [ord(c) for c in line.strip('\n')] + [17, 31, 73, 47, 23]
+    values2 = main(list(range(256)), lengths2, 64)
+    print(to_hex(values2))

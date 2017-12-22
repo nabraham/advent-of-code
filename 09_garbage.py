@@ -1,3 +1,5 @@
+import aoc_utils
+
 def main(line, verbose=False):
     ignore_next = False
     in_carrot = False
@@ -36,9 +38,7 @@ def test():
 
 
 def regular():
-    with open('data/09.txt') as f:
-        line = f.readlines()[0]
-        print(main(line))
+    print(main(aoc_utils.get_input()[0]))
 
 
 if __name__ == '__main__':

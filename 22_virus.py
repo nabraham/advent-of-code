@@ -1,4 +1,5 @@
 import math
+import aoc_utils
 from collections import deque
 
 N, E, S, W = [0, 1, 2, 3]
@@ -50,12 +51,12 @@ def main(grid, transition, turn_logic, iters):
         
 
 def run(filename, transition, turn_logic, iters=10000):
-    print('\n%s\n%s' % (filename, '-'*len(filename)))
-    with open(filename) as f:
-        grid = deque([deque(map(int, list(line.strip('\n')
-            .replace('.',str(CLEAN))
-            .replace('#',str(INFECTED))))) for line in f.readlines()])
-        print(main(grid, transition, turn_logic, iters))
+    print('\n' + aoc_utils.file_header(filename))
+    input = aoc_utils.get_input(filename)
+    grid = deque([deque(map(int, list(line.strip('\n')
+        .replace('.',str(CLEAN))
+        .replace('#',str(INFECTED))))) for line in input])
+    print(main(grid, transition, turn_logic, iters))
 
 
 def transition_p1(state):
@@ -86,7 +87,7 @@ def turn_p2(state, pointing):
     
 
 if __name__ == '__main__':
-    run('data/22_test.txt', transition_p1, turn_p1, 70)
-    run('data/22.txt', transition_p1, turn_p1)
-    run('data/22_test.txt', transition_p2, turn_p2, 100)
-    run('data/22.txt', transition_p2, turn_p2, 10000000)
+    run(aoc_utils.puzzle_test(__file__), transition_p1, turn_p1, 70)
+    run(aoc_utils.puzzle_main(__file__), transition_p1, turn_p1)
+    run(aoc_utils.puzzle_test(__file__), transition_p2, turn_p2, 100)
+    run(aoc_utils.puzzle_main(__file__), transition_p2, turn_p2, 10000000)

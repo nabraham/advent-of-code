@@ -1,3 +1,4 @@
+import aoc_utils
 import string
 
 
@@ -33,25 +34,21 @@ if __name__ == '__main__':
     #print(main(['s1','x3/4','pe/b'], list('abcde')))
     #print(main(['s1','x3/4','pe/b'], list('baedc')))
 
-    with open('data/16.txt') as f:
-        programs = list(string.ascii_lowercase[:16])
-        dance = f.readlines()[0].split(',')
-        #PART 1
-        print('Part 1:', ''.join(main(dance, list(programs))))
+    programs = list(string.ascii_lowercase[:16])
+    dance = aoc_utils.get_input()[0].split(',')
+    #PART 1
+    print('Part 1:', ''.join(main(dance, list(programs))))
 
-        #PART 2
-        seen = set([''.join(programs)])
-        stack = [''.join(programs)]
-        repeat = -1
-        while repeat < 0:
-            programs = main(dance, programs)
-            key = ''.join(programs)
-            if key in seen:
-                repeat = stack.index(key)
-            else:
-                seen.add(key)
-                stack.append(key)
-        print('Cycled after %d, Repeats to %d' %  (len(stack), repeat))
-        cycle = stack[repeat:]
-        repeat_index = 10**9 - repeat
-        print('Part 2:', stack[(10**9 - repeat) % len(cycle)])
+    #PART 2
+    seen = set([''.join(programs)])
+    stack = [''.join(programs)]
+    repeat = -1
+    while repeat < 0:
+        programs = main(dance, programs)
+        key = ''.join(programs)
+        if key in seen:
+            repeat = stack.index(key)
+        else:
+            seen.add(key)
+            stack.append(key)
+    print('Cycled after %d, Repeats to %d' %  (len(stack), repeat))

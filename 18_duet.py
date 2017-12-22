@@ -1,3 +1,4 @@
+import aoc_utils
 #snd X plays a sound with a frequency equal to the value of X.
 #set X Y sets register X to the value of Y.
 #add X Y increases register X by the value of Y.
@@ -82,6 +83,6 @@ def run(filename, verbose=False):
         print(main(program, verbose))
 
 if __name__ == '__main__':
-    run('data/18_test.txt', True)
-    run('data/18.txt', True)
+    run(aoc_utils.puzzle_test(), True)
+    run(aoc_utils.puzzle_main(), True)
 

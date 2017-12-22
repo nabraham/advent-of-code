@@ -1,3 +1,4 @@
+import aoc_utils
 import re
 from collections import Counter
 
@@ -78,6 +79,5 @@ def main(nodes):
     return root, (tree[wrong[0]].weight + wrong[1])
 
 if __name__ == '__main__':
-    with open('data/07.txt') as f:
-        nodes = [Node.create(l.strip('\n')) for l in f.readlines()]
-        print(main(nodes))
+    nodes = [Node.create(line) for line in aoc_utils.get_input()]
+    print(main(nodes))

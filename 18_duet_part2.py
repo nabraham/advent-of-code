@@ -1,3 +1,4 @@
+import aoc_utils
 from collections import defaultdict, deque
 from pprint import pprint
 
@@ -101,5 +102,5 @@ def main(filename, verbose=False):
 
 if __name__ == '__main__':
     main('data/18_test2.txt', True)
-    main('data/18.txt')
+    main(aoc_utils.puzzle_main())
 

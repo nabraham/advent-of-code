@@ -1,11 +1,6 @@
+import aoc_utils
 import re
 from collections import defaultdict
-from pprint import pprint
-
-#b inc 5 if a > 1
-#a inc 1 if b < 5
-#c dec -10 if a >= 1
-#c inc -20 if c == 10
 
 patt = re.compile('([a-z]+) (inc|dec) ([\-\d]+) if ([a-z]+) ([!><=]+) ([\-0-9]+)')
 
@@ -50,6 +45,5 @@ def main(instructions):
 
 
 if __name__ == '__main__':
-    with open('data/08.txt') as f:
-        program = [Instruction(l.strip('\n')) for l in f.readlines()]
-        print(main(program))
+    program = [Instruction(line) for line in aoc_utils.get_input()]
+    print(main(program))

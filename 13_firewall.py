@@ -1,3 +1,5 @@
+import aoc_utils
+
 def hit(scanner, delay=0):
     return (scanner[0]+delay) % (2*(scanner[1]-1)) == 0
 
@@ -35,5 +37,5 @@ def run_file(filename, verbose=False):
 
 
 if __name__ == '__main__':
-    run_file('data/13_test.txt', True)
-    run_file('data/13.txt')
+    run_file(aoc_utils.puzzle_test(), True)
+    run_file(aoc_utils.puzzle_main())

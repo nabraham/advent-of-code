@@ -1,3 +1,4 @@
+import aoc_utils
 import networkx as nx
 
 def parse_line(line):
@@ -25,5 +26,5 @@ def run_file(filename):
 
 
 if __name__ == '__main__':
-    run_file('data/12_test.txt')
-    run_file('data/12.txt')
+    run_file(aoc_utils.puzzle_main())
+    run_file(aoc_utils.puzzle_test())

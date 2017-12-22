@@ -1,3 +1,4 @@
+import aoc_utils
 # Use a tilted coordinate system
 # 0,0
 # 
@@ -63,6 +64,4 @@ def main(movements):
 
 
 if __name__ == '__main__':
-    with open('data/11.txt') as f:
-        line = f.readlines()[0].strip('\n')
-        print(main(line))
+    print(main(aoc_utils.get_input()[0]))
