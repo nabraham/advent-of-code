@@ -25,5 +25,5 @@ def run(filename):
 
 
 if __name__ == '__main__':
-    #run(aoc_utils.puzzle_test())
+    run(aoc_utils.puzzle_test())
     run(aoc_utils.puzzle_main())
