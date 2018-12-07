@@ -19,10 +19,12 @@ def part1(lines):
             for i in range(p.height):
                 quilt['%d,%d' % (p.x + j, p.y + i)].append(p.id)
 
-    return quilt
+    two_or_more = list(filter(lambda x: len(x) > 1, quilt.values()))
+    return len(two_or_more), quilt
     
 
-def part2(quilt):
+def part2(lines):
+    quilt = part1(lines)[1]
     singles = set([])
     multiples = set([])
 
@@ -41,11 +43,8 @@ def part2(quilt):
 def run(filename):
     print(aoc_utils.file_header(filename))
     lines = aoc_utils.get_input(filename)
-
-    quilt = part1(lines)
-    two_or_more = list(filter(lambda x: len(x) > 1, quilt.values()))
-    pprint(len(two_or_more))
-    pprint(part2(quilt))
+    pprint(part1(lines))
+    pprint(part2(lines))
 
 
 if __name__ == '__main__':

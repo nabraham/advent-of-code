@@ -10,7 +10,8 @@ def pretty(line, n=10):
     return line
 
 
-def part1(line):
+def part1(lines):
+    line = lines[0]
     index = 0
     while index < (len(line) - 1):
         curr = line[index]
@@ -23,20 +24,22 @@ def part1(line):
     return len(line), pretty(line)
 
 
-def part2(line):
+def part2(lines):
+    line = lines[0]
     results = []
     for c in string.ascii_lowercase:
         pattern = '[%s%s]' % (c, c.upper())
         replacement = re.sub(pattern, '', line)
-        results.append([c, part1(replacement)])
-    return min(results, key=lambda x: x[1][0])
+        results.append([c, part1([replacement])])
+    m = min(results, key=lambda x: x[1][0])
+    return m[1][0], (m[0], m[1][1])
 
 
 def run(filename):
     print(aoc_utils.file_header(filename))
     lines = aoc_utils.get_input(filename)
-    pprint(part1(lines[0]))
-    pprint(part2(lines[0]))
+    pprint(part1(lines))
+    pprint(part2(lines))
 
 
 if __name__ == '__main__':

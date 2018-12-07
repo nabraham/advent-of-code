@@ -105,12 +105,14 @@ def part1(lines):
         for j in range(grid.min_y, grid.max_y + 1):
             c = find_closest(i,j, queue)
             grid.add(c)
-    return grid.biggest()
+    big = grid.biggest()
+    return big[1], big[0]
 
 
-def part2(lines, total):
+def part2(lines):
     queue = get_queue(lines)
     grid = Grid(queue)
+    total = [32, 10000][grid.max_x > 32]
     count = 0
     for i in range(grid.min_x, grid.max_x + 1):
         for j in range(grid.min_y, grid.max_y + 1):
@@ -119,13 +121,13 @@ def part2(lines, total):
     return count
 
 
-def run(filename, total=10000):
+def run(filename):
     print(aoc_utils.file_header(filename))
     lines = aoc_utils.get_input(filename)
     pprint(part1(lines))
-    pprint(part2(lines, total))
+    pprint(part2(lines))
 
 
 if __name__ == '__main__':
-    run(aoc_utils.puzzle_test(), 32)
+    run(aoc_utils.puzzle_test())
     run(aoc_utils.puzzle_main())
