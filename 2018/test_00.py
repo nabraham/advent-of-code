@@ -1,7 +1,8 @@
-import os
-import re
 from os.path import isfile
 import aoc_utils
+import os
+import re
+import unittest
 
 
 test_file = os.path.basename(__file__)
@@ -13,7 +14,6 @@ files = list(filter(lambda x: isfile(x) and file_rx.match(x), os.listdir()))
 if len(files) > 1:
     raise Exception('Only 1 file expected per challenge')
 package_file = files[0]
-print('package file = ', package_file)
 pack = __import__(package_file[:-3])
 expected = None
 try:
@@ -37,17 +37,18 @@ def run_test(function, input, expected, index):
         assert(str(get_output(actual))) == expected[index]
 
 
-def test_part1_example():
-    run_test(pack.part1, test_in, expected, 0)
+class TestClass(unittest.TestCase):
+    def test_part1_example(self):
+        run_test(pack.part1, test_in, expected, 0)
 
 
-def test_part2_example():
-    run_test(pack.part2, test_in, expected, 1)
+    def test_part2_example(self):
+        run_test(pack.part2, test_in, expected, 1)
 
 
-def test_part1_main():
-    run_test(pack.part1, main_in, expected, 2)
+    def test_part1_main(self):
+        run_test(pack.part1, main_in, expected, 2)
 
 
-def test_part2_main():
-    run_test(pack.part2, main_in, expected, 3)
+    def test_part2_main(self):
+        run_test(pack.part2, main_in, expected, 3)
