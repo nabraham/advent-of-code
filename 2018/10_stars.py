@@ -49,11 +49,10 @@ class Sky:
         return None
 
 
-def display_capture(c, title):
-    plt.subplot(111)
+def display_capture(c, index, title):
+    plt.subplot(index)
     plt.imshow(c, cmap='Greys',  interpolation='nearest')
     plt.title(title)
-    plt.show()
 
 
 def part1(lines):
@@ -73,16 +72,17 @@ def part1(lines):
         area = sky.area()
         captures.append(sky.draw())
 
-    for i in list(range(len(captures) - 1))[::-1]:
-        display_capture(captures[i], 'count = %d' % (i+1))
-
+    return captures[-2], len(captures) - 1
 
 
 def run(filename):
     lines = aoc_utils.get_input(filename)
-    part1(lines)
+    return part1(lines)
 
 
 if __name__ == '__main__':
-    #run(aoc_utils.puzzle_test())
-    run(aoc_utils.puzzle_main())
+    t, ti = run(aoc_utils.puzzle_test())
+    m, mi = run(aoc_utils.puzzle_main())
+    display_capture(t, 211, 'time = %d' % ti)
+    display_capture(m, 212, 'time = %d' % mi)
+    plt.show()
