@@ -65,6 +65,16 @@ def state_hash(state):
     return ''.join(state).strip('.')
 
 
+def iterate(state, rules, pad_left):
+    pad_left = pad_state(state, pad_left)
+    next_state = deque(['.']*len(state))
+    for i in range(2,len(state)-2):
+        next_value = find_next(state, i, rules)
+        if next_value:
+            next_state[i] = next_value
+    return next_state, pad_left
+
+
 def part1(lines, n_gen=20, break_cycle=False):
     state = get_state(lines[0])
     rules = get_rules(lines[2:])
@@ -78,13 +88,7 @@ def part1(lines, n_gen=20, break_cycle=False):
                 break
             else:
                 seen[h] = generation
-        pad_left = pad_state(state, pad_left)
-        next_state = deque(['.']*len(state))
-        for i in range(2,len(state)-2):
-            next_value = find_next(state, i, rules)
-            if next_value:
-                next_state[i] = next_value
-        state = next_state
+        state, pad_left = iterate(state, rules, pad_left)
         generation += 1
 
     return sum_state(state, pad_left), state, generation
@@ -94,16 +98,16 @@ def part2(lines):
     summ, state, gen = part1(lines, 50e9, True)
     pot_count = state.count('#')
     remaining = (50e9 - gen)
-    return summ + remaining * pot_count
+    return int(summ + remaining * pot_count)
 
 
 def run(filename):
     print(aoc_utils.file_header(filename))
     lines = aoc_utils.get_input(filename)
-    pprint(part1(lines))
+    pprint(part1(lines)[0])
     pprint(part2(lines))
 
 
 if __name__ == '__main__':
-    #run(aoc_utils.puzzle_test())
+    run(aoc_utils.puzzle_test())
     run(aoc_utils.puzzle_main())
