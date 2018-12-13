@@ -21,9 +21,12 @@ def file_header(filename):
     return '\n%s\n%s' % (filename, '-'*len(filename))
 
 
-def get_input(filename=None):
+def get_input(filename=None, strip=True):
     if filename == None:
         filename = puzzle_main()
     with open(filename) as f:
-        input = f.read().strip()
+        if strip:
+            input = f.read().strip()
+        else:
+            input = f.read().strip('\n')
     return input.split('\n')
