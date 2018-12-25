@@ -1,0 +1,87 @@
+import aoc_utils
+from pprint import pprint
+from functools import reduce
+
+
+def wait():
+    input('Enter to continue')
+
+
+A, B, C = 0, 1, 2
+
+
+def inst(f):
+    def op(instruction, registers):
+        ro = registers[::]
+        ro[instruction[C]] = f(instruction, registers)
+        return ro
+
+    return op
+
+
+OPERATIONS = {
+    'addi': inst(lambda i, r: r[i[A]] + i[B]),
+    'addr': inst(lambda i, r: r[i[A]] + r[i[B]]),
+    'bani': inst(lambda i, r: r[i[A]] & i[B]),
+    'banr': inst(lambda i, r: r[i[A]] & r[i[B]]),
+    'bori': inst(lambda i, r: r[i[A]] | i[B]),
+    'borr': inst(lambda i, r: r[i[A]] | r[i[B]]),
+    'eqir': inst(lambda i, r: [0, 1][i[A] == r[i[B]]]),
+    'eqri': inst(lambda i, r: [0, 1][r[i[A]] == i[B]]),
+    'eqrr': inst(lambda i, r: [0, 1][r[i[A]] == r[i[B]]]),
+    'gtir': inst(lambda i, r: [0, 1][i[A] > r[i[B]]]),
+    'gtri': inst(lambda i, r: [0, 1][r[i[A]] > i[B]]),
+    'gtrr': inst(lambda i, r: [0, 1][r[i[A]] > r[i[B]]]),
+    'muli': inst(lambda i, r: r[i[A]] * i[B]),
+    'mulr': inst(lambda i, r: r[i[A]] * r[i[B]]),
+    'seti': inst(lambda i, r: i[A]),
+    'setr': inst(lambda i, r: r[i[A]])
+}
+
+
+def parse_program(lines):
+    fp = int(lines[0].split(' ')[1])
+    program = []
+    for line in lines[1:]:
+        parts = line.split(' ')
+        program.append((parts[0], [int(x) for x in parts[1:]]))
+    return fp, program
+
+
+def run_program(pr, program, registers):
+    ip = 0
+    while ip < len(program):
+        instruction = program[ip]
+        op = OPERATIONS[instruction[0]]
+        registers[pr] = ip
+        rout = registers[::]
+        rafter = op(instruction[1], rout)
+        print('ip=%d %s %s %s' % (ip, registers, (instruction[0] + ' ' + ' '.join(map(str, instruction[1]))), rafter))
+        registers = rafter
+        ip = rafter[pr] + 1
+        # wait()
+    return registers
+
+
+def part1(lines):
+    ip, program = parse_program(lines)
+    registers = [0] * 6
+    return run_program(ip, program, registers)[0]
+
+
+def part2(lines):
+    ip, program = parse_program(lines)
+    registers = [1, 0, 0, 0, 0, 0]
+    return run_program(ip, program, registers)[0]
+
+
+def run(filename):
+    print(aoc_utils.file_header(filename))
+    lines = aoc_utils.get_input(filename)
+    # pprint(part1(lines))
+    pprint(part2(lines))
+
+
+if __name__ == '__main__':
+    run(aoc_utils.puzzle_test())
+    run(aoc_utils.puzzle_main())
