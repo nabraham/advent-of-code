@@ -1,3 +1,6 @@
+POSITION, IMMEDIATE = (0, 1)
+HALTED, WAITING, RUNNING = ('HALTED', 'WAITING', 'RUNNING')
+
 class ProgramState:
     def __init__(self, registers=[], inpt=[], out=[], parameter_modes=[], instruction_idx=0):
         self.registers = registers
@@ -6,6 +9,7 @@ class ProgramState:
         self.inpt = inpt
         self.out = out
         self.jumped = False
+        self.status = WAITING
 
     def current(self):
         return self.registers[self.i_idx]
@@ -15,10 +19,12 @@ class ProgramState:
                 (self.registers[self.i_idx:self.i_idx + 8], self.i_idx, self.parameter_modes)
 
     def __repr__(self):
-        return self.curr_pretty()
-
-
-POSITION, IMMEDIATE = (0, 1)
+        reg =    '  registers: %s' % self.registers
+        params = 'param modes: %s' % self.parameter_modes
+        i =      '  in. index: %d' % self.i_idx
+        inp =    '      input: %s' % self.inpt
+        out =    '     output: %s' % self.out
+        return '\n'.join([reg, params, i, inp, out])
 
 
 def parse_input(s):
@@ -56,8 +62,12 @@ def op_mul():
 
 def op_input():
     def op(ps):
-        a = ps.registers[ps.i_idx + 1]
-        ps.registers[a] = ps.inpt[0]
+        if len(ps.inpt) == 0:
+            ps.status = WAITING
+        else:
+            a = ps.registers[ps.i_idx + 1]
+            ps.registers[a] = ps.inpt[0]
+            ps.inpt = ps.inpt[1:]
     return (2, op)
 
 
@@ -76,6 +86,7 @@ def op_jump(inverse=False):
             ps.jumped = True
     return (3, op)
 
+
 def op_compare(f):
     def op(ps):
         a, b, c = get_arguments(ps, 3, [POSITION, POSITION, IMMEDIATE])
@@ -90,7 +101,6 @@ def op_less_than():
 def op_equals():
     return op_compare(lambda x, y: x == y)
 
-
         
 HALT = 99
 INST = {
@@ -104,8 +114,7 @@ INST = {
     8: op_equals()
 }
 
-#1003 => (3, [0, 1])
-#   3 => (3, [])
+
 def parse_code(n):
     s = str(n)
     code = int(s[-2:])
@@ -114,6 +123,7 @@ def parse_code(n):
 
 
 def run_program(ps):
+    ps.status = RUNNING
     op_code, modes = parse_code(ps.current())
     while op_code is not HALT:
         if len(ps.registers) <= ps.i_idx:
@@ -123,11 +133,14 @@ def run_program(ps):
         offset, op = INST[op_code]
         ps.parameter_modes = modes
         op(ps)
+        if ps.status == WAITING:
+            return ps
         if not ps.jumped:
             ps.i_idx += offset
         ps.jumped = False
         
         op_code, modes = parse_code(ps.current())
+    ps.status = HALTED
     return ps
 
 
